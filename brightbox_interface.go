@@ -19,8 +19,9 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 
-	"github.com/brightbox/gobrightbox"
+	brightbox "github.com/brightbox/gobrightbox"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
 	"k8s.io/klog"
@@ -104,6 +105,14 @@ func (c *Cloud) CreateServer(newDetails *brightbox.ServerOptions) (*brightbox.Se
 func isAlive(lb *brightbox.LoadBalancer) bool {
 	return lb.Status == LbActive || lb.Status == LbCreating
 }
+func trimmed(name string) string {
+	return strings.TrimSpace(
+		strings.TrimSuffix(
+			strings.TrimSpace(name),
+			"#type:container",
+		),
+	)
+}
 
 func (c *Cloud) GetLoadBalancerByName(name string) (*brightbox.LoadBalancer, error) {
 	klog.V(4).Infof("GetLoadBalancerByName (%q)", name)
@@ -116,7 +125,7 @@ func (c *Cloud) GetLoadBalancerByName(name string) (*brightbox.LoadBalancer, err
 		return nil, err
 	}
 	for i := range lbList {
-		if isAlive(&lbList[i]) && name == lbList[i].Name {
+		if isAlive(&lbList[i]) && trimmed(name) == trimmed(lbList[i].Name) {
 			return &lbList[i], nil
 		}
 	}
