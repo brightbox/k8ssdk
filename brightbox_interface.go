@@ -22,6 +22,7 @@ import (
 	"strings"
 
 	brightbox "github.com/brightbox/gobrightbox"
+	"github.com/brightbox/gobrightbox/status"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
 	"k8s.io/klog"
@@ -91,7 +92,7 @@ func (c *Cloud) CreateServer(newDetails *brightbox.ServerOptions) (*brightbox.Se
 }
 
 func isAlive(lb *brightbox.LoadBalancer) bool {
-	return lb.Status == brightbox.Active || lb.Status == brightbox.Creating
+	return lb.Status == status.Active || lb.Status == status.Creating
 }
 func trimmed(name string) string {
 	return strings.TrimSpace(
@@ -257,7 +258,7 @@ func (c *Cloud) EnsureMappedCloudIP(lb *brightbox.LoadBalancer, cip *brightbox.C
 	klog.V(4).Infof("EnsureMappedCloudIP (%q, %q)", lb.Id, cip.Id)
 	if alreadyMapped(cip, lb.Id) {
 		return nil
-	} else if cip.Status == brightbox.Mapped {
+	} else if cip.Status == status.Mapped {
 		return fmt.Errorf("Unexplained mapping of %q (%q)", cip.Id, cip.PublicIP)
 	}
 	client, err := c.CloudClient()
