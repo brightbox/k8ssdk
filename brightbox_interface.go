@@ -444,7 +444,11 @@ func (authd *authdetails) validateConfig() error {
 
 // Authenticate the details and return a client
 func (authd *authdetails) authenticatedClient() (*brightbox.Client, error) {
-	ctx := context.Background()
+	ctx := context.WithValue(
+		context.Background(),
+		oauth2.HTTPClient,
+		memoryCachedHTTPClient(),
+	)
 	switch {
 	case authd.UserName != "" || authd.password != "":
 		return authd.tokenisedAuth(ctx)

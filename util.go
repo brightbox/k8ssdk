@@ -16,9 +16,12 @@ package k8ssdk
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 	"sort"
 	"strings"
+
+	"github.com/gregjones/httpcache"
 )
 
 const (
@@ -56,10 +59,10 @@ func MapZoneHandleToRegion(zoneHandle string) (string, error) {
 // named by the key. If the variable is not present, return the default
 //value instead.
 func getenvWithDefault(key string, defaultValue string) string {
-	if val, exists := os.LookupEnv(key); !exists {
-		return defaultValue
+	if val, exists := os.LookupEnv(key); exists {
+		return val
 	}
-	return val
+	return defaultValue
 }
 
 //get a list of inserts and deletes that changes oldList into newList
@@ -114,4 +117,8 @@ func sameStringSlice(x, y []string) bool {
 		return true
 	}
 	return false
+}
+
+func memoryCachedHTTPClient() *http.Client {
+	return httpcache.NewMemoryCacheTransport().Client()
 }
