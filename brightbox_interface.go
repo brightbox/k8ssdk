@@ -407,7 +407,7 @@ func getDeposedCloudIPList(cloudIPList []brightbox.CloudIP, id string) []brightb
 
 // obtainCloudClient creates a new Brightbox client using details from
 // the environment
-func obtainCloudClient() (*brightbox.Client, error) {
+func obtainCloudClient() (CloudAccess, error) {
 	klog.V(4).Infof("obtainCloudClient")
 	config := &authdetails{
 		APIClient: getenvWithDefault(clientEnvVar,
@@ -443,7 +443,7 @@ func (authd *authdetails) validateConfig() error {
 }
 
 // Authenticate the details and return a client
-func (authd *authdetails) authenticatedClient() (*brightbox.Client, error) {
+func (authd *authdetails) authenticatedClient() (CloudAccess, error) {
 	ctx := context.Background()
 	switch {
 	case authd.UserName != "" || authd.password != "":
@@ -457,7 +457,7 @@ func (authd *authdetails) tokenURL() string {
 	return authd.APIURL + "/token"
 }
 
-func (authd *authdetails) tokenisedAuth(ctx context.Context) (*brightbox.Client, error) {
+func (authd *authdetails) tokenisedAuth(ctx context.Context) (CloudAccess, error) {
 	conf := oauth2.Config{
 		ClientID:     authd.APIClient,
 		ClientSecret: authd.APISecret,
@@ -478,7 +478,7 @@ func (authd *authdetails) tokenisedAuth(ctx context.Context) (*brightbox.Client,
 	return brightbox.NewClient(authd.APIURL, authd.Account, oauthConnection)
 }
 
-func (authd *authdetails) apiClientAuth(ctx context.Context) (*brightbox.Client, error) {
+func (authd *authdetails) apiClientAuth(ctx context.Context) (CloudAccess, error) {
 	conf := clientcredentials.Config{
 		ClientID:     authd.APIClient,
 		ClientSecret: authd.APISecret,
