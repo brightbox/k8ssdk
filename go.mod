@@ -3,7 +3,7 @@ module github.com/brightbox/k8ssdk
 go 1.13
 
 require (
-	github.com/aws/aws-sdk-go-v2 v0.18.0
+	github.com/aws/aws-sdk-go-v2 v0.20.0
 	github.com/brightbox/gobrightbox v0.4.4
 	github.com/go-test/deep v1.0.4
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79
