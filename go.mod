@@ -9,5 +9,5 @@ require (
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/stretchr/testify v1.4.0
 	golang.org/x/oauth2 v0.0.0-20191202225959-858c2ad4c8b6
-	k8s.io/klog v1.0.0
+	k8s.io/klog/v2 v2.1.0
 )

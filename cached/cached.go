@@ -6,7 +6,7 @@ import (
 
 	brightbox "github.com/brightbox/gobrightbox"
 	cache "github.com/patrickmn/go-cache"
-	"k8s.io/klog"
+	klog "k8s.io/klog/v2"
 )
 
 const (
