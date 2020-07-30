@@ -3,6 +3,8 @@ github.com/aws/aws-sdk-go-v2 v0.18.0 h1:qZ+woO4SamnH/eEbjM2IDLhRNwIwND/RQyVlBLp3
 github.com/aws/aws-sdk-go-v2 v0.18.0/go.mod h1:JWVYvqSMppoMJC0x5wdwiImzgXTI9FuZwxzkQq9wy+g=
 github.com/brightbox/gobrightbox v0.4.4 h1:t+9FRFKq3fGRbm0rlA84BTkD731b2ByFeWseFTQZBaU=
 github.com/brightbox/gobrightbox v0.4.4/go.mod h1:cxNZnRQT0IJTyS38+TWm2/aZFrD4mNpsVvu3RZjKhyw=
+github.com/brightbox/gobrightbox v0.5.0 h1:2eqjxXvHeGjyfPqRk88LgIfT5GYiIQ/jiTK2pSORun0=
+github.com/brightbox/gobrightbox v0.5.0/go.mod h1:8Cr7ce3rbg6mFS79jkwe9PtGgn0OGFrEjQUjiMqqGwQ=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
