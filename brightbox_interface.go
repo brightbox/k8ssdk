@@ -1,4 +1,4 @@
-// Copyright 2018 Brightbox Systems Ltd
+// Copyright 2020 Brightbox Systems Ltd
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -144,6 +144,16 @@ func (c *Cloud) GetFirewallPolicyByName(name string) (*brightbox.FirewallPolicy,
 		}
 	}
 	return result, nil
+}
+
+// GetConfigMaps obtains the list of Config Maps on the account
+func (c *Cloud) GetConfigMaps() ([]brightbox.ConfigMap, error) {
+	klog.V(4).Info("GetConfigMaps")
+	client, err := c.CloudClient()
+	if err != nil {
+		return nil, err
+	}
+	return client.ConfigMaps()
 }
 
 // GetServerGroups obtains the list of Server Groups on the account
