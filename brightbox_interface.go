@@ -156,6 +156,16 @@ func (c *Cloud) GetConfigMaps() ([]brightbox.ConfigMap, error) {
 	return client.ConfigMaps()
 }
 
+// GetConfigMap fetches a Config Map from its ID
+func (c *Cloud) GetConfigMap(identifier string) (*brightbox.ConfigMap, error) {
+	klog.V(4).Infof("GetConfigMap %q", identifier)
+	client, err := c.CloudClient()
+	if err != nil {
+		return nil, err
+	}
+	return client.ConfigMap(identifier)
+}
+
 // GetServerGroups obtains the list of Server Groups on the account
 func (c *Cloud) GetServerGroups() ([]brightbox.ServerGroup, error) {
 	klog.V(4).Info("GetServerGroups")
