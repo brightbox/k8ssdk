@@ -523,6 +523,52 @@ func (_m *CloudAccess) ServerGroups() ([]brightbox.ServerGroup, error) {
 	return r0, r1
 }
 
+// ServerType provides a mock function with given fields: identifier
+func (_m *CloudAccess) ServerType(identifier string) (*brightbox.ServerType, error) {
+	ret := _m.Called(identifier)
+
+	var r0 *brightbox.ServerType
+	if rf, ok := ret.Get(0).(func(string) *brightbox.ServerType); ok {
+		r0 = rf(identifier)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*brightbox.ServerType)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(identifier)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// ServerTypes provides a mock function with given fields:
+func (_m *CloudAccess) ServerTypes() ([]brightbox.ServerType, error) {
+	ret := _m.Called()
+
+	var r0 []brightbox.ServerType
+	if rf, ok := ret.Get(0).(func() []brightbox.ServerType); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]brightbox.ServerType)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // UnMapCloudIP provides a mock function with given fields: identifier
 func (_m *CloudAccess) UnMapCloudIP(identifier string) error {
 	ret := _m.Called(identifier)

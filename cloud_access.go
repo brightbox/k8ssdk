@@ -97,4 +97,10 @@ type CloudAccess interface {
 
 	// ConfigMap retrieves a detailed view on one config map
 	ConfigMap(identifier string) (*brightbox.ConfigMap, error)
+
+	// ServerTypes retrieves a list of all server types
+	ServerTypes() ([]brightbox.ServerType, error)
+
+	// ServerType retrieves a detailed view on one server type
+	ServerType(identifier string) (*brightbox.ServerType, error)
 }

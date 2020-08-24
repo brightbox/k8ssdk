@@ -146,6 +146,26 @@ func (c *Cloud) GetFirewallPolicyByName(name string) (*brightbox.FirewallPolicy,
 	return result, nil
 }
 
+// GetServerTypes obtains the list of Server Types on the account
+func (c *Cloud) GetServerTypes() ([]brightbox.ServerType, error) {
+	klog.V(4).Info("GetServerTypes")
+	client, err := c.CloudClient()
+	if err != nil {
+		return nil, err
+	}
+	return client.ServerTypes()
+}
+
+// GetServerType fetches a Server Type from its ID
+func (c *Cloud) GetServerType(identifier string) (*brightbox.ServerType, error) {
+	klog.V(4).Infof("GetServerType %q", identifier)
+	client, err := c.CloudClient()
+	if err != nil {
+		return nil, err
+	}
+	return client.ServerType(identifier)
+}
+
 // GetConfigMaps obtains the list of Config Maps on the account
 func (c *Cloud) GetConfigMaps() ([]brightbox.ConfigMap, error) {
 	klog.V(4).Info("GetConfigMaps")
