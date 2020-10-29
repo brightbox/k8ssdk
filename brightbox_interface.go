@@ -525,12 +525,20 @@ func ErrorIfNotComplete(lb *brightbox.LoadBalancer, cipID, name string) error {
 		return fmt.Errorf("Load Balancer for %q is missing", name)
 	case !isAlive(lb):
 		return fmt.Errorf("Load Balancer %q still building", lb.Id)
-	case len(lb.CloudIPs) > 1:
-		return fmt.Errorf("Unmapping of deposed CloudIPs to %q not complete", lb.Id)
-	case len(lb.CloudIPs) <= 0 || lb.CloudIPs[0].Id != cipID:
+	case !containsCIP(lb.CloudIPs, cipID):
 		return fmt.Errorf("Mapping of CloudIP %q to %q not complete", cipID, lb.Id)
 	}
 	return ErrorIfAcmeNotComplete(lb.Acme)
+}
+
+// Look for a CIP Id in a list of cloudIPs
+func containsCIP(cloudIPList []brightbox.CloudIP, cipID string) bool {
+	for _, v := range cloudIPList {
+		if v.Id == cipID {
+			return true
+		}
+	}
+	return false
 }
 
 // ErrorIfAcmeNotComplete returns an appropriate error if ACME has not yet validated
