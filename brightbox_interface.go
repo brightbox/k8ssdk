@@ -381,11 +381,10 @@ func (c *Cloud) unmapCloudIP(id string) error {
 //DestroyCloudIPs matching 'name' from a supplied list of cloudIPs
 func (c *Cloud) DestroyCloudIPs(cloudIPList []brightbox.CloudIP, name string) error {
 	klog.V(4).Infof("DestroyCloudIPs (%q)", name)
-	for i := range cloudIPList {
-		if cloudIPList[i].Name == name {
-			err := c.DestroyCloudIP(cloudIPList[i].Id)
-			if err != nil {
-				klog.V(4).Infof("Error destroying CloudIP %q", cloudIPList[i].Id)
+	for _, v := range cloudIPList {
+		if v.Name == name {
+			if err := c.DestroyCloudIP(v.Id); err != nil {
+				klog.V(4).Infof("Error destroying CloudIP %q", v.Id)
 				return err
 			}
 		}
@@ -394,26 +393,18 @@ func (c *Cloud) DestroyCloudIPs(cloudIPList []brightbox.CloudIP, name string) er
 }
 
 // EnsureOldCloudIPsDeposed unmaps any CloudIPs mapped to the loadbalancer
-// that are not the allocated cloud ip.
-func (c *Cloud) EnsureOldCloudIPsDeposed(lb *brightbox.LoadBalancer, cip *brightbox.CloudIP, name string) error {
-	klog.V(4).Infof("EnsureOldCloudIPsDeposed (%q, %q, %q)", lb.Id, cip.Id, name)
-	deposedCloudIPList := getDeposedCloudIPList(lb.CloudIPs, cip.Id)
-	for i := range deposedCloudIPList {
-		if err := c.unmapCloudIP(deposedCloudIPList[i].Id); err != nil {
-			return err
+// that isn't the current cloudip and matches 'name'
+func (c *Cloud) EnsureOldCloudIPsDeposed(cloudIPList []brightbox.CloudIP, currentIPID string, name string) error {
+	klog.V(4).Infof("EnsureOldCloudIPsDeposed (%q, %q)", currentIPID, name)
+	for _, v := range cloudIPList {
+		if v.Name == name && v.Id != currentIPID {
+			if err := c.unmapCloudIP(v.Id); err != nil {
+				klog.V(4).Infof("Error unmapping CloudIP %q", v.Id)
+				return err
+			}
 		}
 	}
 	return nil
-}
-
-func getDeposedCloudIPList(cloudIPList []brightbox.CloudIP, id string) []brightbox.CloudIP {
-	deposedCloudIPList := make([]brightbox.CloudIP, 0, len(cloudIPList))
-	for i := range cloudIPList {
-		if cloudIPList[i].Id != id {
-			deposedCloudIPList = append(deposedCloudIPList, cloudIPList[i])
-		}
-	}
-	return deposedCloudIPList
 }
 
 func mapServersToServerIds(servers []brightbox.Server) []string {
