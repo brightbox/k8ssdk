@@ -7,7 +7,7 @@ require (
 	github.com/brightbox/gobrightbox v0.5.7
 	github.com/go-test/deep v1.0.7
 	github.com/patrickmn/go-cache v2.1.0+incompatible
-	github.com/stretchr/testify v1.6.1
+	github.com/stretchr/testify v1.7.0
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 	k8s.io/klog/v2 v2.3.0
 )
