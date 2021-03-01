@@ -3,6 +3,7 @@ github.com/aws/aws-sdk-go-v2 v0.18.0 h1:qZ+woO4SamnH/eEbjM2IDLhRNwIwND/RQyVlBLp3
 github.com/aws/aws-sdk-go-v2 v0.18.0/go.mod h1:JWVYvqSMppoMJC0x5wdwiImzgXTI9FuZwxzkQq9wy+g=
 github.com/brightbox/gobrightbox v0.6.0 h1:15kjnKYcAbupsS3KMC7bSUBJtMC5GqXPOqgHByq1Xeg=
 github.com/brightbox/gobrightbox v0.6.0/go.mod h1:vO3u/jBuJ/9KaBkGIUaI3hAy6eqBBA4GuST91KWMfmA=
+github.com/brightbox/gobrightbox v0.7.1/go.mod h1:vO3u/jBuJ/9KaBkGIUaI3hAy6eqBBA4GuST91KWMfmA=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
