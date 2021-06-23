@@ -493,16 +493,19 @@ func isUpdateLoadBalancerListenerRequired(a []brightbox.LoadBalancerListener, b 
 	return false
 }
 
-func isUpdateLoadBalancerDomainsRequired(a []string, acme *brightbox.LoadBalancerAcme) bool {
+func isUpdateLoadBalancerDomainsRequired(a *[]string, acme *brightbox.LoadBalancerAcme) bool {
 	klog.V(6).Infof("Update LoadBalancer Domains Required (%v)", a)
 	if acme == nil {
 		return a != nil
+	}
+	if a == nil {
+		return false
 	}
 	b := make([]string, len(acme.Domains))
 	for i, domain := range acme.Domains {
 		b[i] = domain.Identifier
 	}
-	return !sameStringSlice(a, b)
+	return !sameStringSlice(*a, b)
 }
 
 // ErrorIfNotErased returns an appropriate error if the Load Balancer has not been erased
