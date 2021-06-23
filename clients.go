@@ -15,8 +15,8 @@
 package k8ssdk
 
 import (
-	"github.com/aws/aws-sdk-go-v2/aws/ec2metadata"
-	"github.com/aws/aws-sdk-go-v2/aws/external"
+	"github.com/aws/aws-sdk-go/aws/ec2metadata"
+	"github.com/aws/aws-sdk-go/aws/session"
 )
 
 // EC2Metadata is an abstraction over the AWS metadata service.
@@ -35,7 +35,7 @@ type Cloud struct {
 // from the default AWS config if one doesn't exist.
 func (c *Cloud) MetadataClient() (EC2Metadata, error) {
 	if c.metadataClientCache == nil {
-		cfg, err := external.LoadDefaultAWSConfig()
+		cfg, err := session.NewSession()
 		if err != nil {
 			return nil, err
 		}

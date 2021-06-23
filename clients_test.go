@@ -19,7 +19,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/aws/aws-sdk-go-v2/aws/ec2metadata"
+	"github.com/aws/aws-sdk-go/aws/ec2metadata"
 	klog "k8s.io/klog/v2"
 )
 
@@ -41,7 +41,7 @@ func TestGetMetadataClient(t *testing.T) {
 		t.Errorf("Failed to get metadata client: %s", err.Error())
 	}
 	switch mdc.(type) {
-	case (*ec2metadata.Client):
+	case (*ec2metadata.EC2Metadata):
 	default:
 		t.Errorf("Returned incorrect metadata client")
 	}
