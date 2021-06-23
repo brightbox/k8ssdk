@@ -1,0 +1,29 @@
+version: 2
+updates:
+- package-ecosystem: gomod
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: github.com/aws/aws-sdk-go-v2
+    versions:
+    - ">= 0.23.a, < 0.24"
+  - dependency-name: github.com/aws/aws-sdk-go-v2
+    versions:
+    - ">= 0.24.a, < 0.25"
+  - dependency-name: github.com/stretchr/testify
+    versions:
+    - "> 1.6.1, < 1.7"
+  - dependency-name: k8s.io/klog/v2
+    versions:
+    - 2.5.0
+    - 2.6.0
+    - 2.7.0
+  - dependency-name: github.com/brightbox/gobrightbox
+    versions:
+    - 0.5.9
+    - 0.7.0
+  - dependency-name: github.com/stretchr/testify
+    versions:
+    - 1.7.0
