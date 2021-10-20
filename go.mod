@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/aws/aws-sdk-go v1.35.37
-	github.com/brightbox/gobrightbox v0.8.0
+	github.com/brightbox/gobrightbox v0.8.1
 	github.com/go-test/deep v1.0.7
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible

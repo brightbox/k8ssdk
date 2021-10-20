@@ -503,7 +503,7 @@ func isUpdateLoadBalancerDomainsRequired(a *[]string, acme *brightbox.LoadBalanc
 	}
 	b := make([]string, len(acme.Domains))
 	for i, domain := range acme.Domains {
-		b[i] = domain.IDentifier
+		b[i] = domain.Identifier
 	}
 	return !sameStringSlice(*a, b)
 }
@@ -549,7 +549,7 @@ func ErrorIfAcmeNotComplete(acme *brightbox.LoadBalancerAcme) error {
 	if acme != nil {
 		for _, domain := range acme.Domains {
 			if domain.Status != ValidAcmeDomainStatus {
-				return fmt.Errorf("Domain %q has not yet been validated for SSL use (%q:%q)", domain.IDentifier, domain.Status, domain.LastMessage)
+				return fmt.Errorf("Domain %q has not yet been validated for SSL use (%q:%q)", domain.Identifier, domain.Status, domain.LastMessage)
 			}
 		}
 	}
