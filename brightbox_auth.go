@@ -37,6 +37,7 @@ const (
 
 	defaultTimeoutSeconds = 10
 
+	// ValidAcmeDomainStatus indicates a valid acme state
 	ValidAcmeDomainStatus = "valid"
 )
 

@@ -22,11 +22,13 @@ import (
 )
 
 const (
-	ProviderName   = "brightbox"
+	// ProviderName is set to brightobox
+	ProviderName = "brightbox"
+	// ProviderPrefix is the exported URL prefix including the provider name
 	ProviderPrefix = ProviderName + "://"
 )
 
-// Parse the provider id string and return a string that should be a server id
+// MapProviderIDToServerID parses the provider id string and return a string that should be a server id
 // Should be no need for  error checking here, since the input string
 // is constrained in format by the k8s process
 func MapProviderIDToServerID(providerID string) string {
@@ -36,12 +38,12 @@ func MapProviderIDToServerID(providerID string) string {
 	return providerID
 }
 
-// Add the provider prefix to the server ID
+// MapServerIDToProviderID adds the provider prefix to the server ID
 func MapServerIDToProviderID(serverID string) string {
 	return ProviderPrefix + serverID
 }
 
-// Parse the zone handle and return the embedded region id
+// MapZoneHandleToRegion parses the zone handle and return the embedded region id
 // Zone names are of the form: ${region-name}-${ix}
 // So we look for the last '-' and trim just before that
 func MapZoneHandleToRegion(zoneHandle string) (string, error) {

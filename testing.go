@@ -22,6 +22,7 @@ import (
 	"testing"
 )
 
+// ResetAuthEnvironment clears the authorisation environment variables
 func ResetAuthEnvironment() {
 	vars := []string{
 		clientEnvVar,
@@ -36,30 +37,37 @@ func ResetAuthEnvironment() {
 	}
 }
 
+// SetAuthEnvClientID sets the client id in the environment
 func SetAuthEnvClientID() {
 	os.Setenv(clientSecretEnvVar, "not default")
 }
 
+// SetAuthEnvUsername sets the username in the environment
 func SetAuthEnvUsername() {
 	os.Setenv(usernameEnvVar, "itsy@bitzy.com")
 }
 
+// SetAuthEnvPassword sets the password in the environment
 func SetAuthEnvPassword() {
 	os.Setenv(passwordEnvVar, "madeuppassword")
 }
 
+// SetAuthEnvAPIURL sets the APIURL in the environment
 func SetAuthEnvAPIURL(value string) {
 	os.Setenv(apiURLEnvVar, value)
 }
 
+// SetAuthEnvAccount sets the account id in the environment
 func SetAuthEnvAccount() {
 	os.Setenv(accountEnvVar, "acc-testy")
 }
 
+// ClearAuthEnvUsername removes the username from the environment
 func ClearAuthEnvUsername() {
 	os.Unsetenv(usernameEnvVar)
 }
 
+// GetAuthEnvTokenHandler obtains an HTTP token handler using the auth environment
 func GetAuthEnvTokenHandler(t *testing.T) *httptest.Server {
 	ResetAuthEnvironment()
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -98,6 +106,7 @@ func GetAuthEnvTokenHandler(t *testing.T) *httptest.Server {
 	return ts
 }
 
+// MakeTestClient creates a test client
 func MakeTestClient(testClient CloudAccess, testMetadata EC2Metadata) *Cloud {
 	return &Cloud{
 		client:              testClient,
