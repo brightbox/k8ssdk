@@ -19,6 +19,7 @@ import (
 	mock "github.com/stretchr/testify/mock"
 )
 
+// ServerListReducer removes a server from the list of servers in the group
 func ServerListReducer(target *brightbox.ServerGroup) func(mock.Arguments) {
 	return func(mock.Arguments) {
 		target.Servers = target.Servers[1:]
