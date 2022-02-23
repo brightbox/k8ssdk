@@ -378,11 +378,12 @@ func (c *Cloud) unmapCloudIP(id string) error {
 	return client.UnMapCloudIP(id)
 }
 
-//DestroyCloudIPs matching 'name' from a supplied list of cloudIPs
-func (c *Cloud) DestroyCloudIPs(cloudIPList []brightbox.CloudIP, name string) error {
-	klog.V(4).Infof("DestroyCloudIPs (%q)", name)
+// DestroyCloudIPs removes any CloudIPs from a supplied list of cloudIPs
+// that matched 'name', and isn't the current cloudip
+func (c *Cloud) DestroyCloudIPs(cloudIPList []brightbox.CloudIP, currentIPID string, name string) error {
+	klog.V(4).Infof("DestroyCloudIPs (%q, %q)", currentIPID, name)
 	for _, v := range cloudIPList {
-		if v.Name == name {
+		if v.Name == name && v.ID != currentIPID {
 			if err := c.DestroyCloudIP(v.ID); err != nil {
 				klog.V(4).Infof("Error destroying CloudIP %q", v.ID)
 				return err
