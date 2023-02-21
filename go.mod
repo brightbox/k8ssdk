@@ -9,12 +9,12 @@ require (
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/oauth2 v0.5.0
-	k8s.io/klog/v2 v2.9.0
+	k8s.io/klog/v2 v2.80.1
 )
 
 require (
 	github.com/davecgh/go-spew v1.1.0 // indirect
-	github.com/go-logr/logr v0.4.0 // indirect
+	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
