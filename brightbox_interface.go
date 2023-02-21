@@ -16,6 +16,7 @@ package k8ssdk
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -43,12 +44,11 @@ func (c *Cloud) GetServer(ctx context.Context, id string, notFoundError error) (
 }
 
 func isNotFound(e error) bool {
-	switch v := e.(type) {
-	case brightbox.APIError:
+	var v *brightbox.APIError
+	if errors.As(e, &v) {
 		return v.StatusCode == http.StatusNotFound
-	default:
-		return false
 	}
+	return false
 }
 
 // CreateServer creates a Brightbox Cloud Server
@@ -306,7 +306,7 @@ func (c *Cloud) GetCloudIPs() ([]brightbox.CloudIP, error) {
 	return client.CloudIPs()
 }
 
-//Get a cloudIp by id
+// Get a cloudIp by id
 func (c *Cloud) getCloudIP(id string) (*brightbox.CloudIP, error) {
 	klog.V(4).Infof("getCloudIP (%q)", id)
 	client, err := c.CloudClient()
