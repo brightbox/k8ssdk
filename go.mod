@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/aws/aws-sdk-go v1.35.37
 	github.com/brightbox/gobrightbox v0.8.4
-	github.com/go-test/deep v1.0.7
+	github.com/go-test/deep v1.1.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/oauth2 v0.6.0
