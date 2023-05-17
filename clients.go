@@ -20,6 +20,8 @@ import (
 )
 
 // EC2Metadata is an abstraction over the AWS metadata service.
+//
+//go:generate mockery --name EC2Metadata --boilerplate-file copyright_header
 type EC2Metadata interface {
 	// Query the EC2 metadata service (used to discover instance-id etc)
 	GetMetadata(path string) (string, error)

@@ -17,6 +17,8 @@ package k8ssdk
 import brightbox "github.com/brightbox/gobrightbox"
 
 // CloudAccess is an abstraction over the Brightbox API to allow testing
+//
+//go:generate mockery --name CloudAccess --boilerplate-file copyright_header
 type CloudAccess interface {
 	//Fetch a server
 	Server(identifier string) (*brightbox.Server, error)
@@ -91,6 +93,9 @@ type CloudAccess interface {
 
 	// DestroyCloudIP issues a request to destroy the cloud ip
 	DestroyCloudIP(identifier string) error
+
+	// ConfigMaps retrieves a list of all config maps
+	Images() ([]brightbox.Image, error)
 
 	// ConfigMaps retrieves a list of all config maps
 	ConfigMaps() ([]brightbox.ConfigMap, error)
