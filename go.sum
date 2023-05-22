@@ -1,5 +1,5 @@
-github.com/aws/aws-sdk-go v1.44.264 h1:5klL62ebn6uv3oJ0ixF7K12hKItj8lV3QqWeQPlkFSs=
-github.com/aws/aws-sdk-go v1.44.264/go.mod h1:aVsgQcEevwlmQ7qHE9I3h+dtQgpqhFB+i8Phjh7fkwI=
+github.com/aws/aws-sdk-go v1.44.266 h1:MWd775dcYf7NrwgcHLtlsIbWoWkX8p4vomfNHr88zH0=
+github.com/aws/aws-sdk-go v1.44.266/go.mod h1:aVsgQcEevwlmQ7qHE9I3h+dtQgpqhFB+i8Phjh7fkwI=
 github.com/brightbox/gobrightbox v0.8.5 h1:TGCXxCH84h6NEaC3BSXudPAAl+EEb/zpwagdn/QmNoc=
 github.com/brightbox/gobrightbox v0.8.5/go.mod h1:ah0BfmpXtfl6imyQCVA0LMjg3zrEeYOd3EDEbu2aGqg=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
