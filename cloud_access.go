@@ -14,98 +14,103 @@
 
 package k8ssdk
 
-import brightbox "github.com/brightbox/gobrightbox"
+import (
+	"context"
+
+	brightbox "github.com/brightbox/gobrightbox/v2"
+)
 
 // CloudAccess is an abstraction over the Brightbox API to allow testing
 //
 //go:generate mockery --name CloudAccess --boilerplate-file copyright_header
 type CloudAccess interface {
 	//Fetch a server
-	Server(identifier string) (*brightbox.Server, error)
+	Server(context.Context, string) (*brightbox.Server, error)
 
 	//creates a new server
-	CreateServer(newServer *brightbox.ServerOptions) (*brightbox.Server, error)
+	CreateServer(context.Context, brightbox.ServerOptions) (*brightbox.Server, error)
 
 	//Fetch a list of LoadBalancers
-	LoadBalancers() ([]brightbox.LoadBalancer, error)
+	LoadBalancers(context.Context) ([]brightbox.LoadBalancer, error)
 
 	//Retrieves a detailed view of one load balancer
-	LoadBalancer(identifier string) (*brightbox.LoadBalancer, error)
+	LoadBalancer(context.Context, string) (*brightbox.LoadBalancer, error)
 
 	//Creates a new load balancer
-	CreateLoadBalancer(newDetails *brightbox.LoadBalancerOptions) (*brightbox.LoadBalancer, error)
+	CreateLoadBalancer(context.Context, brightbox.LoadBalancerOptions) (*brightbox.LoadBalancer, error)
 
 	//Updates an existing load balancer
-	UpdateLoadBalancer(newDetails *brightbox.LoadBalancerOptions) (*brightbox.LoadBalancer, error)
+	UpdateLoadBalancer(context.Context, brightbox.LoadBalancerOptions) (*brightbox.LoadBalancer, error)
 
 	//Retrieves a list of all cloud IPs
-	CloudIPs() ([]brightbox.CloudIP, error)
+	CloudIPs(context.Context) ([]brightbox.CloudIP, error)
 
 	//retrieves a detailed view of one cloud ip
-	CloudIP(identifier string) (*brightbox.CloudIP, error)
+	CloudIP(context.Context, string) (*brightbox.CloudIP, error)
 
 	//Issues a request to map the cloud ip to the destination
-	MapCloudIP(identifier string, destination string) error
+	MapCloudIP(context.Context, string, brightbox.CloudIPAttachment) (*brightbox.CloudIP, error)
 
 	//UnMapCloudIP issues a request to unmap the cloud ip
-	UnMapCloudIP(identifier string) error
+	UnMapCloudIP(context.Context, string) (*brightbox.CloudIP, error)
 
 	//Creates a new Cloud IP
-	CreateCloudIP(newCloudIP *brightbox.CloudIPOptions) (*brightbox.CloudIP, error)
+	CreateCloudIP(context.Context, brightbox.CloudIPOptions) (*brightbox.CloudIP, error)
+
 	//adds servers to an existing server group
-	AddServersToServerGroup(identifier string, serverIds []string) (*brightbox.ServerGroup, error)
+	AddServersToServerGroup(context.Context, string, brightbox.ServerGroupMemberList) (*brightbox.ServerGroup, error)
 
 	//removes servers from an existing server group
-	RemoveServersFromServerGroup(identifier string, serverIds []string) (*brightbox.ServerGroup, error)
+	RemoveServersFromServerGroup(context.Context, string, brightbox.ServerGroupMemberList) (*brightbox.ServerGroup, error)
 
 	// ServerGroups retrieves a list of all server groups
-	ServerGroups() ([]brightbox.ServerGroup, error)
+	ServerGroups(context.Context) ([]brightbox.ServerGroup, error)
 
 	//Fetch a server group
-	ServerGroup(identifier string) (*brightbox.ServerGroup, error)
+	ServerGroup(context.Context, string) (*brightbox.ServerGroup, error)
 
 	//creates a new server group
-	CreateServerGroup(newServerGroup *brightbox.ServerGroupOptions) (*brightbox.ServerGroup, error)
+	CreateServerGroup(context.Context, brightbox.ServerGroupOptions) (*brightbox.ServerGroup, error)
 
 	//creates a new firewall policy
-	CreateFirewallPolicy(policyOptions *brightbox.FirewallPolicyOptions) (*brightbox.FirewallPolicy, error)
+	CreateFirewallPolicy(context.Context, brightbox.FirewallPolicyOptions) (*brightbox.FirewallPolicy, error)
 
 	//creates a new firewall rule
-	CreateFirewallRule(ruleOptions *brightbox.FirewallRuleOptions) (*brightbox.FirewallRule, error)
+	CreateFirewallRule(context.Context, brightbox.FirewallRuleOptions) (*brightbox.FirewallRule, error)
 
 	//updates an existing firewall rule
-	UpdateFirewallRule(ruleOptions *brightbox.FirewallRuleOptions) (*brightbox.FirewallRule, error)
+	UpdateFirewallRule(context.Context, brightbox.FirewallRuleOptions) (*brightbox.FirewallRule, error)
 
 	//retrieves a list of all firewall policies
-	FirewallPolicies() ([]brightbox.FirewallPolicy, error)
+	FirewallPolicies(context.Context) ([]brightbox.FirewallPolicy, error)
 
 	// DestroyServer destroys an existing server
-	DestroyServer(identifier string) error
+	DestroyServer(context.Context, string) (*brightbox.Server, error)
 
 	// DestroyServerGroup destroys an existing server group
-	DestroyServerGroup(identifier string) error
+	DestroyServerGroup(context.Context, string) (*brightbox.ServerGroup, error)
 
 	// DestroyFirewallPolicy issues a request to destroy the firewall policy
-	DestroyFirewallPolicy(identifier string) error
+	DestroyFirewallPolicy(context.Context, string) (*brightbox.FirewallPolicy, error)
 
 	// DestroyLoadBalancer issues a request to destroy the load balancer
-	DestroyLoadBalancer(identifier string) error
+	DestroyLoadBalancer(context.Context, string) (*brightbox.LoadBalancer, error)
 
 	// DestroyCloudIP issues a request to destroy the cloud ip
-	DestroyCloudIP(identifier string) error
+	DestroyCloudIP(context.Context, string) (*brightbox.CloudIP, error)
 
 	// ConfigMaps retrieves a list of all config maps
-	Images() ([]brightbox.Image, error)
+	Images(context.Context) ([]brightbox.Image, error)
 
 	// ConfigMaps retrieves a list of all config maps
-	ConfigMaps() ([]brightbox.ConfigMap, error)
+	ConfigMaps(context.Context) ([]brightbox.ConfigMap, error)
 
 	// ConfigMap retrieves a detailed view on one config map
-	ConfigMap(identifier string) (*brightbox.ConfigMap, error)
+	ConfigMap(context.Context, string) (*brightbox.ConfigMap, error)
 
 	// ServerTypes retrieves a list of all server types
-	ServerTypes() ([]brightbox.ServerType, error)
+	ServerTypes(context.Context) ([]brightbox.ServerType, error)
 
 	// ServerType retrieves a detailed view on one server type
-	ServerType(identifier string) (*brightbox.ServerType, error)
+	ServerType(context.Context, string) (*brightbox.ServerType, error)
 }

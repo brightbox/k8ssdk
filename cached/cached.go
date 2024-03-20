@@ -15,10 +15,10 @@
 package cached
 
 import (
-	"net/http"
+	"context"
 	"time"
 
-	brightbox "github.com/brightbox/gobrightbox"
+	brightbox "github.com/brightbox/gobrightbox/v2"
 	cache "github.com/patrickmn/go-cache"
 	klog "k8s.io/klog/v2"
 )
@@ -34,9 +34,9 @@ type Client struct {
 	brightbox.Client
 }
 
-// NewClient creates and returns a cached Client
-func NewClient(url string, account string, httpClient *http.Client) (*Client, error) {
-	cl, err := brightbox.NewClient(url, account, httpClient)
+// Connect allocates and configures a Client for interacting with the API.
+func Connect(ctx context.Context, config brightbox.Oauth2) (*Client, error) {
+	cl, err := brightbox.Connect(ctx, config)
 	if err != nil {
 		return nil, err
 	}
@@ -46,13 +46,13 @@ func NewClient(url string, account string, httpClient *http.Client) (*Client, er
 	}, err
 }
 
-//Server fetches a server by id
-func (c *Client) Server(identifier string) (*brightbox.Server, error) {
+// Server fetches a server by id
+func (c *Client) Server(ctx context.Context, identifier string) (*brightbox.Server, error) {
 	if cachedServer, found := c.clientCache.Get(identifier); found {
 		klog.V(4).Infof("Cache hit %q", identifier)
 		return cachedServer.(*brightbox.Server), nil
 	}
-	server, err := c.Client.Server(identifier)
+	server, err := c.Client.Server(ctx, identifier)
 	if err != nil {
 		return nil, err
 	}
@@ -61,13 +61,13 @@ func (c *Client) Server(identifier string) (*brightbox.Server, error) {
 	return server, nil
 }
 
-//ServerGroup fetches a server group by id
-func (c *Client) ServerGroup(identifier string) (*brightbox.ServerGroup, error) {
+// ServerGroup fetches a server group by id
+func (c *Client) ServerGroup(ctx context.Context, identifier string) (*brightbox.ServerGroup, error) {
 	if cachedServerGroup, found := c.clientCache.Get(identifier); found {
 		klog.V(4).Infof("Cache hit %q", identifier)
 		return cachedServerGroup.(*brightbox.ServerGroup), nil
 	}
-	serverGroup, err := c.Client.ServerGroup(identifier)
+	serverGroup, err := c.Client.ServerGroup(ctx, identifier)
 	if err != nil {
 		return nil, err
 	}
@@ -76,13 +76,13 @@ func (c *Client) ServerGroup(identifier string) (*brightbox.ServerGroup, error) 
 	return serverGroup, nil
 }
 
-//ConfigMap fetches a config map by id
-func (c *Client) ConfigMap(identifier string) (*brightbox.ConfigMap, error) {
+// ConfigMap fetches a config map by id
+func (c *Client) ConfigMap(ctx context.Context, identifier string) (*brightbox.ConfigMap, error) {
 	if cachedConfigMap, found := c.clientCache.Get(identifier); found {
 		klog.V(4).Infof("Cache hit %q", identifier)
 		return cachedConfigMap.(*brightbox.ConfigMap), nil
 	}
-	configMap, err := c.Client.ConfigMap(identifier)
+	configMap, err := c.Client.ConfigMap(ctx, identifier)
 	if err != nil {
 		return nil, err
 	}
@@ -91,20 +91,20 @@ func (c *Client) ConfigMap(identifier string) (*brightbox.ConfigMap, error) {
 	return configMap, nil
 }
 
-//DestroyServer removes a server by id
-func (c *Client) DestroyServer(identifier string) error {
-	err := c.Client.DestroyServer(identifier)
+// DestroyServer removes a server by id
+func (c *Client) DestroyServer(ctx context.Context, identifier string) (*brightbox.Server, error) {
+	server, err := c.Client.DestroyServer(ctx, identifier)
 	if err == nil {
 		c.clientCache.Delete(identifier)
 	}
-	return err
+	return server, err
 }
 
-//DestroyServerGroup removes a server group by id
-func (c *Client) DestroyServerGroup(identifier string) error {
-	err := c.Client.DestroyServerGroup(identifier)
+// DestroyServerGroup removes a server group by id
+func (c *Client) DestroyServerGroup(ctx context.Context, identifier string) (*brightbox.ServerGroup, error) {
+	group, err := c.Client.DestroyServerGroup(ctx, identifier)
 	if err == nil {
 		c.clientCache.Delete(identifier)
 	}
-	return err
+	return group, err
 }

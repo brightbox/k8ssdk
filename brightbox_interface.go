@@ -23,8 +23,10 @@ import (
 	"sort"
 	"strings"
 
-	brightbox "github.com/brightbox/gobrightbox"
-	"github.com/brightbox/gobrightbox/status"
+	brightbox "github.com/brightbox/gobrightbox/v2"
+	"github.com/brightbox/gobrightbox/v2/enums/cloudipstatus"
+	"github.com/brightbox/gobrightbox/v2/enums/imagestatus"
+	"github.com/brightbox/gobrightbox/v2/enums/loadbalancerstatus"
 	klog "k8s.io/klog/v2"
 )
 
@@ -35,7 +37,7 @@ func (c *Cloud) GetServer(ctx context.Context, id string, notFoundError error) (
 	if err != nil {
 		return nil, err
 	}
-	srv, err := client.Server(id)
+	srv, err := client.Server(ctx, id)
 	if err != nil {
 		if isNotFound(err) {
 			return nil, notFoundError
@@ -54,18 +56,18 @@ func isNotFound(e error) bool {
 }
 
 // CreateServer creates a Brightbox Cloud Server
-func (c *Cloud) CreateServer(newDetails *brightbox.ServerOptions) (*brightbox.Server, error) {
+func (c *Cloud) CreateServer(ctx context.Context, newDetails brightbox.ServerOptions) (*brightbox.Server, error) {
 	klog.V(4).Infof("CreateServer (%q)", *newDetails.Name)
 	klog.V(6).Infof("%+v", newDetails)
 	client, err := c.CloudClient()
 	if err != nil {
 		return nil, err
 	}
-	return client.CreateServer(newDetails)
+	return client.CreateServer(ctx, newDetails)
 }
 
 func isAlive(lb *brightbox.LoadBalancer) bool {
-	return lb.Status == status.Active || lb.Status == status.Creating
+	return lb.Status == loadbalancerstatus.Active || lb.Status == loadbalancerstatus.Creating
 }
 func trimmed(name string) string {
 	return strings.TrimSpace(
@@ -77,13 +79,13 @@ func trimmed(name string) string {
 }
 
 // GetLoadBalancerByName finds a Load Balancer from its name
-func (c *Cloud) GetLoadBalancerByName(name string) (*brightbox.LoadBalancer, error) {
+func (c *Cloud) GetLoadBalancerByName(ctx context.Context, name string) (*brightbox.LoadBalancer, error) {
 	klog.V(4).Infof("GetLoadBalancerByName (%q)", name)
 	client, err := c.CloudClient()
 	if err != nil {
 		return nil, err
 	}
-	lbList, err := client.LoadBalancers()
+	lbList, err := client.LoadBalancers(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -96,45 +98,45 @@ func (c *Cloud) GetLoadBalancerByName(name string) (*brightbox.LoadBalancer, err
 }
 
 // GetLoadBalancerByID finds a Load Balancer from its ID
-func (c *Cloud) GetLoadBalancerByID(id string) (*brightbox.LoadBalancer, error) {
+func (c *Cloud) GetLoadBalancerByID(ctx context.Context, id string) (*brightbox.LoadBalancer, error) {
 	klog.V(4).Infof("GetLoadBalancerByID (%q)", id)
 	client, err := c.CloudClient()
 	if err != nil {
 		return nil, err
 	}
-	return client.LoadBalancer(id)
+	return client.LoadBalancer(ctx, id)
 }
 
 // CreateLoadBalancer creates a LoadBalancer
-func (c *Cloud) CreateLoadBalancer(newDetails *brightbox.LoadBalancerOptions) (*brightbox.LoadBalancer, error) {
+func (c *Cloud) CreateLoadBalancer(ctx context.Context, newDetails brightbox.LoadBalancerOptions) (*brightbox.LoadBalancer, error) {
 	klog.V(4).Infof("CreateLoadBalancer (%q)", *newDetails.Name)
 	klog.V(6).Infof("%+v", newDetails)
 	client, err := c.CloudClient()
 	if err != nil {
 		return nil, err
 	}
-	return client.CreateLoadBalancer(newDetails)
+	return client.CreateLoadBalancer(ctx, newDetails)
 }
 
 // UpdateLoadBalancer updates a LoadBalancer
-func (c *Cloud) UpdateLoadBalancer(newDetails *brightbox.LoadBalancerOptions) (*brightbox.LoadBalancer, error) {
+func (c *Cloud) UpdateLoadBalancer(ctx context.Context, newDetails brightbox.LoadBalancerOptions) (*brightbox.LoadBalancer, error) {
 	klog.V(4).Infof("UpdateLoadBalancer (%q, %q)", newDetails.ID, *newDetails.Name)
 	klog.V(6).Infof("%+v", newDetails)
 	client, err := c.CloudClient()
 	if err != nil {
 		return nil, err
 	}
-	return client.UpdateLoadBalancer(newDetails)
+	return client.UpdateLoadBalancer(ctx, newDetails)
 }
 
 // GetFirewallPolicyByName get a FirewallPolicy from its name
-func (c *Cloud) GetFirewallPolicyByName(name string) (*brightbox.FirewallPolicy, error) {
+func (c *Cloud) GetFirewallPolicyByName(ctx context.Context, name string) (*brightbox.FirewallPolicy, error) {
 	klog.V(4).Infof("getFirewallPolicyByName (%q)", name)
 	client, err := c.CloudClient()
 	if err != nil {
 		return nil, err
 	}
-	firewallPolicyList, err := client.FirewallPolicies()
+	firewallPolicyList, err := client.FirewallPolicies(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -149,27 +151,27 @@ func (c *Cloud) GetFirewallPolicyByName(name string) (*brightbox.FirewallPolicy,
 }
 
 // GetServerTypes obtains the list of Server Types on the account
-func (c *Cloud) GetServerTypes() ([]brightbox.ServerType, error) {
+func (c *Cloud) GetServerTypes(ctx context.Context) ([]brightbox.ServerType, error) {
 	klog.V(4).Info("GetServerTypes")
 	client, err := c.CloudClient()
 	if err != nil {
 		return nil, err
 	}
-	return client.ServerTypes()
+	return client.ServerTypes(ctx)
 }
 
 // GetServerType fetches a Server Type from its ID
-func (c *Cloud) GetServerType(identifier string) (*brightbox.ServerType, error) {
+func (c *Cloud) GetServerType(ctx context.Context, identifier string) (*brightbox.ServerType, error) {
 	klog.V(4).Infof("GetServerType %q", identifier)
 	client, err := c.CloudClient()
 	if err != nil {
 		return nil, err
 	}
-	return client.ServerType(identifier)
+	return client.ServerType(ctx, identifier)
 }
 
 // GetImageByName obtains the most recent available image that matches the supplied pattern
-func (c *Cloud) GetImageByName(name string) (*brightbox.Image, error) {
+func (c *Cloud) GetImageByName(ctx context.Context, name string) (*brightbox.Image, error) {
 	klog.V(4).Infof("GetImageByName %q", name)
 	client, err := c.CloudClient()
 	if err != nil {
@@ -181,7 +183,7 @@ func (c *Cloud) GetImageByName(name string) (*brightbox.Image, error) {
 		return nil, err
 	}
 	klog.V(6).Info("GetImageByName retrieving images")
-	images, err := client.Images()
+	images, err := client.Images(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -190,7 +192,7 @@ func (c *Cloud) GetImageByName(name string) (*brightbox.Image, error) {
 		images,
 		func(i brightbox.Image) bool {
 			return i.Official &&
-				i.Status == status.Available &&
+				i.Status == imagestatus.Available &&
 				nameRe.MatchString(i.Name)
 		},
 	)
@@ -199,49 +201,49 @@ func (c *Cloud) GetImageByName(name string) (*brightbox.Image, error) {
 }
 
 // GetConfigMaps obtains the list of Config Maps on the account
-func (c *Cloud) GetConfigMaps() ([]brightbox.ConfigMap, error) {
+func (c *Cloud) GetConfigMaps(ctx context.Context) ([]brightbox.ConfigMap, error) {
 	klog.V(4).Info("GetConfigMaps")
 	client, err := c.CloudClient()
 	if err != nil {
 		return nil, err
 	}
-	return client.ConfigMaps()
+	return client.ConfigMaps(ctx)
 }
 
 // GetConfigMap fetches a Config Map from its ID
-func (c *Cloud) GetConfigMap(identifier string) (*brightbox.ConfigMap, error) {
+func (c *Cloud) GetConfigMap(ctx context.Context, identifier string) (*brightbox.ConfigMap, error) {
 	klog.V(4).Infof("GetConfigMap %q", identifier)
 	client, err := c.CloudClient()
 	if err != nil {
 		return nil, err
 	}
-	return client.ConfigMap(identifier)
+	return client.ConfigMap(ctx, identifier)
 }
 
 // GetServerGroups obtains the list of Server Groups on the account
-func (c *Cloud) GetServerGroups() ([]brightbox.ServerGroup, error) {
+func (c *Cloud) GetServerGroups(ctx context.Context) ([]brightbox.ServerGroup, error) {
 	klog.V(4).Info("GetServerGroups")
 	client, err := c.CloudClient()
 	if err != nil {
 		return nil, err
 	}
-	return client.ServerGroups()
+	return client.ServerGroups(ctx)
 }
 
 // GetServerGroup fetches a Server Group from its ID
-func (c *Cloud) GetServerGroup(identifier string) (*brightbox.ServerGroup, error) {
+func (c *Cloud) GetServerGroup(ctx context.Context, identifier string) (*brightbox.ServerGroup, error) {
 	klog.V(4).Infof("GetServerGroup %q", identifier)
 	client, err := c.CloudClient()
 	if err != nil {
 		return nil, err
 	}
-	return client.ServerGroup(identifier)
+	return client.ServerGroup(ctx, identifier)
 }
 
 // GetServerGroupByName fetches a Server Group from its name
-func (c *Cloud) GetServerGroupByName(name string) (*brightbox.ServerGroup, error) {
+func (c *Cloud) GetServerGroupByName(ctx context.Context, name string) (*brightbox.ServerGroup, error) {
 	klog.V(4).Infof("GetServerGroupByName (%q)", name)
-	serverGroupList, err := c.GetServerGroups()
+	serverGroupList, err := c.GetServerGroups(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -256,59 +258,60 @@ func (c *Cloud) GetServerGroupByName(name string) (*brightbox.ServerGroup, error
 }
 
 // CreateServerGroup creates a Server Group
-func (c *Cloud) CreateServerGroup(name string) (*brightbox.ServerGroup, error) {
+func (c *Cloud) CreateServerGroup(ctx context.Context, name string) (*brightbox.ServerGroup, error) {
 	klog.V(4).Infof("CreateServerGroup (%q)", name)
 	client, err := c.CloudClient()
 	if err != nil {
 		return nil, err
 	}
-	return client.CreateServerGroup(&brightbox.ServerGroupOptions{Name: &name})
+	return client.CreateServerGroup(ctx, brightbox.ServerGroupOptions{Name: &name})
 }
 
 // CreateFirewallPolicy creates a Firewall Policy
-func (c *Cloud) CreateFirewallPolicy(group *brightbox.ServerGroup) (*brightbox.FirewallPolicy, error) {
+func (c *Cloud) CreateFirewallPolicy(ctx context.Context, group brightbox.ServerGroup) (*brightbox.FirewallPolicy, error) {
 	klog.V(4).Infof("createFirewallPolicy (%q)", group.Name)
 	client, err := c.CloudClient()
 	if err != nil {
 		return nil, err
 	}
-	return client.CreateFirewallPolicy(&brightbox.FirewallPolicyOptions{Name: &group.Name, ServerGroup: &group.ID})
+	return client.CreateFirewallPolicy(ctx, brightbox.FirewallPolicyOptions{Name: &group.Name, FirewallPolicyAttachment: &brightbox.FirewallPolicyAttachment{ServerGroup: group.ID}})
 }
 
 // CreateFirewallRule creates a Firewall Rule
-func (c *Cloud) CreateFirewallRule(newDetails *brightbox.FirewallRuleOptions) (*brightbox.FirewallRule, error) {
+func (c *Cloud) CreateFirewallRule(ctx context.Context, newDetails brightbox.FirewallRuleOptions) (*brightbox.FirewallRule, error) {
 	klog.V(4).Infof("createFirewallRule (%q)", *newDetails.Description)
 	client, err := c.CloudClient()
 	if err != nil {
 		return nil, err
 	}
-	return client.CreateFirewallRule(newDetails)
+	return client.CreateFirewallRule(ctx, newDetails)
 }
 
 // UpdateFirewallRule updates a Firewall Rule
-func (c *Cloud) UpdateFirewallRule(newDetails *brightbox.FirewallRuleOptions) (*brightbox.FirewallRule, error) {
+func (c *Cloud) UpdateFirewallRule(ctx context.Context, newDetails brightbox.FirewallRuleOptions) (*brightbox.FirewallRule, error) {
 	klog.V(4).Infof("updateFirewallRule (%q, %q)", newDetails.ID, *newDetails.Description)
 	client, err := c.CloudClient()
 	if err != nil {
 		return nil, err
 	}
-	return client.UpdateFirewallRule(newDetails)
+	return client.UpdateFirewallRule(ctx, newDetails)
 }
 
 // EnsureMappedCloudIP checks to make sure the Cloud IP is mapped to the Load Balancer.
 // This function is idempotent.
-func (c *Cloud) EnsureMappedCloudIP(lb *brightbox.LoadBalancer, cip *brightbox.CloudIP) error {
+func (c *Cloud) EnsureMappedCloudIP(ctx context.Context, lb *brightbox.LoadBalancer, cip *brightbox.CloudIP) error {
 	klog.V(4).Infof("EnsureMappedCloudIP (%q, %q)", lb.ID, cip.ID)
 	if alreadyMapped(cip, lb.ID) {
 		return nil
-	} else if cip.Status == status.Mapped {
+	} else if cip.Status == cloudipstatus.Mapped {
 		return fmt.Errorf("Unexplained mapping of %q (%q)", cip.ID, cip.PublicIP)
 	}
 	client, err := c.CloudClient()
 	if err != nil {
 		return err
 	}
-	return client.MapCloudIP(cip.ID, lb.ID)
+	_, err = client.MapCloudIP(ctx, cip.ID, brightbox.CloudIPAttachment{Destination: lb.ID})
+	return err
 }
 
 func alreadyMapped(cip *brightbox.CloudIP, loadBalancerID string) bool {
@@ -316,107 +319,113 @@ func alreadyMapped(cip *brightbox.CloudIP, loadBalancerID string) bool {
 }
 
 // AllocateCloudIP allocates a new Cloud IP and gives it the name specified
-func (c *Cloud) AllocateCloudIP(name string) (*brightbox.CloudIP, error) {
+func (c *Cloud) AllocateCloudIP(ctx context.Context, name string) (*brightbox.CloudIP, error) {
 	klog.V(4).Infof("AllocateCloudIP %q", name)
 	client, err := c.CloudClient()
 	if err != nil {
 		return nil, err
 	}
-	opts := &brightbox.CloudIPOptions{
+	opts := brightbox.CloudIPOptions{
 		Name: &name,
 	}
-	return client.CreateCloudIP(opts)
+	return client.CreateCloudIP(ctx, opts)
 }
 
 // GetCloudIPs obtains the list of allocated Cloud IPs
-func (c *Cloud) GetCloudIPs() ([]brightbox.CloudIP, error) {
+func (c *Cloud) GetCloudIPs(ctx context.Context) ([]brightbox.CloudIP, error) {
 	klog.V(4).Infof("GetCloudIPs")
 	client, err := c.CloudClient()
 	if err != nil {
 		return nil, err
 	}
-	return client.CloudIPs()
+	return client.CloudIPs(ctx)
 }
 
 // Get a cloudIp by id
-func (c *Cloud) getCloudIP(id string) (*brightbox.CloudIP, error) {
+func (c *Cloud) getCloudIP(ctx context.Context, id string) (*brightbox.CloudIP, error) {
 	klog.V(4).Infof("getCloudIP (%q)", id)
 	client, err := c.CloudClient()
 	if err != nil {
 		return nil, err
 	}
-	return client.CloudIP(id)
+	return client.CloudIP(ctx, id)
 }
 
 // Destroy things
 
 // DestroyLoadBalancer removes a Load Balancer
-func (c *Cloud) DestroyLoadBalancer(id string) error {
+func (c *Cloud) DestroyLoadBalancer(ctx context.Context, id string) error {
 	klog.V(4).Infof("DestroyLoadBalancer %q", id)
 	client, err := c.CloudClient()
 	if err != nil {
 		return err
 	}
-	return client.DestroyLoadBalancer(id)
+	_, err = client.DestroyLoadBalancer(ctx, id)
+	return err
 }
 
 // DestroyServer removes a Server
-func (c *Cloud) DestroyServer(id string) error {
+func (c *Cloud) DestroyServer(ctx context.Context, id string) error {
 	klog.V(4).Infof("DestroyServer %q", id)
 	client, err := c.CloudClient()
 	if err != nil {
 		return err
 	}
-	return client.DestroyServer(id)
+	_, err = client.DestroyServer(ctx, id)
+	return err
 }
 
 // DestroyServerGroup removes a Server Group
-func (c *Cloud) DestroyServerGroup(id string) error {
+func (c *Cloud) DestroyServerGroup(ctx context.Context, id string) error {
 	klog.V(4).Infof("DestroyServerGroup %q", id)
 	client, err := c.CloudClient()
 	if err != nil {
 		return err
 	}
-	return client.DestroyServerGroup(id)
+	_, err = client.DestroyServerGroup(ctx, id)
+	return err
 }
 
 // DestroyFirewallPolicy removes a Firewall Policy
-func (c *Cloud) DestroyFirewallPolicy(id string) error {
+func (c *Cloud) DestroyFirewallPolicy(ctx context.Context, id string) error {
 	klog.V(4).Infof("DestroyFirewallPolicy %q", id)
 	client, err := c.CloudClient()
 	if err != nil {
 		return err
 	}
-	return client.DestroyFirewallPolicy(id)
+	_, err = client.DestroyFirewallPolicy(ctx, id)
+	return err
 }
 
 // DestroyCloudIP removes a Cloud IP allocation
-func (c *Cloud) DestroyCloudIP(id string) error {
+func (c *Cloud) DestroyCloudIP(ctx context.Context, id string) error {
 	klog.V(4).Infof("DestroyCloudIP (%q)", id)
 	client, err := c.CloudClient()
 	if err != nil {
 		return err
 	}
-	return client.DestroyCloudIP(id)
+	_, err = client.DestroyCloudIP(ctx, id)
+	return err
 }
 
 // unmapCloudIP removes a mapping to a Cloud IP
-func (c *Cloud) unmapCloudIP(id string) error {
+func (c *Cloud) unmapCloudIP(ctx context.Context, id string) error {
 	klog.V(4).Infof("unmapCloudIP (%q)", id)
 	client, err := c.CloudClient()
 	if err != nil {
 		return err
 	}
-	return client.UnMapCloudIP(id)
+	_, err = client.UnMapCloudIP(ctx, id)
+	return err
 }
 
 // DestroyCloudIPs removes any CloudIPs from a supplied list of cloudIPs
 // that matched 'name', and isn't the current cloudip
-func (c *Cloud) DestroyCloudIPs(cloudIPList []brightbox.CloudIP, currentIPID string, name string) error {
+func (c *Cloud) DestroyCloudIPs(ctx context.Context, cloudIPList []brightbox.CloudIP, currentIPID string, name string) error {
 	klog.V(4).Infof("DestroyCloudIPs (%q, %q)", currentIPID, name)
 	for _, v := range cloudIPList {
 		if v.Name == name && v.ID != currentIPID {
-			if err := c.DestroyCloudIP(v.ID); err != nil {
+			if err := c.DestroyCloudIP(ctx, v.ID); err != nil {
 				klog.V(4).Infof("Error destroying CloudIP %q", v.ID)
 				return err
 			}
@@ -427,11 +436,11 @@ func (c *Cloud) DestroyCloudIPs(cloudIPList []brightbox.CloudIP, currentIPID str
 
 // EnsureOldCloudIPsDeposed unmaps any CloudIPs mapped to the loadbalancer
 // that isn't the current cloudip and matches 'name'
-func (c *Cloud) EnsureOldCloudIPsDeposed(cloudIPList []brightbox.CloudIP, currentIPID string, name string) error {
+func (c *Cloud) EnsureOldCloudIPsDeposed(ctx context.Context, cloudIPList []brightbox.CloudIP, currentIPID string, name string) error {
 	klog.V(4).Infof("EnsureOldCloudIPsDeposed (%q, %q)", currentIPID, name)
 	for _, v := range cloudIPList {
 		if v.Name == name && v.ID != currentIPID {
-			if err := c.unmapCloudIP(v.ID); err != nil {
+			if err := c.unmapCloudIP(ctx, v.ID); err != nil {
 				klog.V(4).Infof("Error unmapping CloudIP %q", v.ID)
 				return err
 			}
@@ -450,7 +459,7 @@ func mapServersToServerIDs(servers []brightbox.Server) []string {
 
 // SyncServerGroup ensures a Brightbox Server Group contains the supplied
 // list of Servers and nothing else
-func (c *Cloud) SyncServerGroup(group *brightbox.ServerGroup, newServerIDs []string) (*brightbox.ServerGroup, error) {
+func (c *Cloud) SyncServerGroup(ctx context.Context, group *brightbox.ServerGroup, newServerIDs []string) (*brightbox.ServerGroup, error) {
 	oldServerIDs := mapServersToServerIDs(group.Servers)
 	klog.V(4).Infof("SyncServerGroup (%v, %v, %v)", group.ID, oldServerIDs, newServerIDs)
 	client, err := c.CloudClient()
@@ -461,11 +470,23 @@ func (c *Cloud) SyncServerGroup(group *brightbox.ServerGroup, newServerIDs []str
 	result := group
 	if len(serverIDsToInsert) > 0 {
 		klog.V(4).Infof("Adding Servers %v", serverIDsToInsert)
-		result, err = client.AddServersToServerGroup(group.ID, serverIDsToInsert)
+		serverList := brightbox.ServerGroupMemberList{
+			Servers: make([]brightbox.ServerGroupMember, len(serverIDsToInsert)),
+		}
+		for i, server := range serverIDsToInsert {
+			serverList.Servers[i] = brightbox.ServerGroupMember{Server: server}
+		}
+		result, err = client.AddServersToServerGroup(ctx, group.ID, serverList)
 	}
 	if err == nil && len(serverIDsToDelete) > 0 {
 		klog.V(4).Infof("Removing Servers %v", serverIDsToDelete)
-		result, err = client.RemoveServersFromServerGroup(group.ID, serverIDsToDelete)
+		serverList := brightbox.ServerGroupMemberList{
+			Servers: make([]brightbox.ServerGroupMember, len(serverIDsToDelete)),
+		}
+		for i, server := range serverIDsToDelete {
+			serverList.Servers[i] = brightbox.ServerGroupMember{Server: server}
+		}
+		result, err = client.RemoveServersFromServerGroup(ctx, group.ID, serverList)
 	}
 	return result, err
 }

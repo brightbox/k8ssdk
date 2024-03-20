@@ -72,7 +72,7 @@ func GetAuthEnvTokenHandler(t *testing.T) *httptest.Server {
 	ResetAuthEnvironment()
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer r.Body.Close()
-		expected := "/token"
+		expected := "/token/"
 		if r.URL.String() != expected {
 			t.Errorf("URL = %q; want %q", r.URL, expected)
 		}
@@ -91,10 +91,10 @@ func GetAuthEnvTokenHandler(t *testing.T) *httptest.Server {
 			t.Errorf("Authorization header = %q; want %q", headerAuth, expected)
 		}
 		switch string(body) {
-		case "grant_type=password&password=madeuppassword&scope=infrastructure&username=itsy%40bitzy.com":
+		case "grant_type=password&password=madeuppassword&scope=infrastructure+orbit&username=itsy%40bitzy.com":
 			w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
 			w.Write([]byte("access_token=90d64460d14870c08c81352a05dedd3465940a7c&scope=user&token_type=bearer"))
-		case "grant_type=password&password=&scope=infrastructure&username=itsy%40bitzy.com":
+		case "grant_type=password&password=&scope=infrastructure+orbit&username=itsy%40bitzy.com":
 			w.WriteHeader(http.StatusUnauthorized)
 		default:
 			t.Errorf("Unexpected res.Body = %q", string(body))

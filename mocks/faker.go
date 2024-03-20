@@ -15,7 +15,7 @@
 package mocks
 
 import (
-	brightbox "github.com/brightbox/gobrightbox"
+	brightbox "github.com/brightbox/gobrightbox/v2"
 	mock "github.com/stretchr/testify/mock"
 )
 
