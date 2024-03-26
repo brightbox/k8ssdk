@@ -3,7 +3,7 @@ module github.com/brightbox/k8ssdk/v2
 go 1.21
 
 require (
-	github.com/aws/aws-sdk-go v1.51.3
+	github.com/aws/aws-sdk-go v1.51.7
 	github.com/brightbox/gobrightbox/v2 v2.2.2
 	github.com/go-test/deep v1.1.0
 	github.com/hashicorp/go-cleanhttp v0.5.2
