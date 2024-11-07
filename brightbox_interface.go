@@ -301,10 +301,11 @@ func (c *Cloud) UpdateFirewallRule(ctx context.Context, newDetails brightbox.Fir
 // This function is idempotent.
 func (c *Cloud) EnsureMappedCloudIP(ctx context.Context, lb *brightbox.LoadBalancer, cip *brightbox.CloudIP) error {
 	klog.V(4).Infof("EnsureMappedCloudIP (%q, %q)", lb.ID, cip.ID)
-	if alreadyMapped(cip, lb.ID) {
+	if cip.Status == cloudipstatus.Mapped {
+		if !alreadyMapped(cip, lb.ID) {
+			klog.Warningf("CloudIP %q (%v) is mapped elsewhere. Unmap the Cloud IP and reapply this manifest, or map manually to %q", cip.ID, cip.PublicIP, lb.ID)
+		}
 		return nil
-	} else if cip.Status == cloudipstatus.Mapped {
-		return fmt.Errorf("Unexplained mapping of %q (%q)", cip.ID, cip.PublicIP)
 	}
 	client, err := c.CloudClient()
 	if err != nil {
