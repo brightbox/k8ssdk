@@ -102,11 +102,9 @@ func configureClient(ctx context.Context, authd authdetails) (CloudAccess, error
 // Authenticate the details and return a client
 func authenticatedClient(authCtx context.Context, authd authdetails) (CloudAccess, error) {
 	klog.V(4).Infof("configureClient")
-	apiContext, apiCancel := context.WithCancel(context.Background())
-	defer apiCancel()
-	apiContext = contextWithLoggedHTTPClient(apiContext)
+	refreshContext := contextWithLoggedHTTPClient(context.Background())
 
-	client, err := brightbox.Connect(apiContext, confFromAuthd(authd))
+	client, err := brightbox.Connect(refreshContext, confFromAuthd(authd))
 	if err != nil {
 		return nil, err
 	}
