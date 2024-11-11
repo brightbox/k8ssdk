@@ -342,9 +342,9 @@ func (c *Cloud) GetCloudIPs(ctx context.Context) ([]brightbox.CloudIP, error) {
 	return client.CloudIPs(ctx)
 }
 
-// Get a cloudIp by id
-func (c *Cloud) getCloudIP(ctx context.Context, id string) (*brightbox.CloudIP, error) {
-	klog.V(4).Infof("getCloudIP (%q)", id)
+// GetCloudIP obtains the details of a particular Cloud IP
+func (c *Cloud) GetCloudIP(ctx context.Context, id string) (*brightbox.CloudIP, error) {
+	klog.V(4).Infof("GetCloudIP (%q)", id)
 	client, err := c.CloudClient()
 	if err != nil {
 		return nil, err
