@@ -425,26 +425,28 @@ func (c *Cloud) unmapCloudIP(ctx context.Context, id string) error {
 func (c *Cloud) DestroyCloudIPs(ctx context.Context, cloudIPList []brightbox.CloudIP, currentIPID string, name string) error {
 	klog.V(4).Infof("DestroyCloudIPs (%q, %q)", currentIPID, name)
 	for _, v := range cloudIPList {
-		if v.Name == name && v.ID != currentIPID {
-			if err := c.DestroyCloudIP(ctx, v.ID); err != nil {
-				klog.V(4).Infof("Error destroying CloudIP %q", v.ID)
-				return err
-			}
+		if v.ID == currentIPID || v.Name != name {
+			continue
+		}
+		if err := c.DestroyCloudIP(ctx, v.ID); err != nil {
+			klog.V(4).Infof("Error destroying CloudIP %q", v.ID)
+			return err
 		}
 	}
 	return nil
 }
 
 // EnsureOldCloudIPsDeposed unmaps any CloudIPs mapped to the loadbalancer
-// that isn't the current cloudip and matches 'name'
-func (c *Cloud) EnsureOldCloudIPsDeposed(ctx context.Context, cloudIPList []brightbox.CloudIP, currentIPID string, name string) error {
-	klog.V(4).Infof("EnsureOldCloudIPsDeposed (%q, %q)", currentIPID, name)
+// that isn't the current IP
+func (c *Cloud) EnsureOldCloudIPsDeposed(ctx context.Context, cloudIPList []brightbox.CloudIP, currentIPID string) error {
+	klog.V(4).Infof("EnsureOldCloudIPsDeposed (%q)", currentIPID)
 	for _, v := range cloudIPList {
-		if v.Name == name && v.ID != currentIPID {
-			if err := c.unmapCloudIP(ctx, v.ID); err != nil {
-				klog.V(4).Infof("Error unmapping CloudIP %q", v.ID)
-				return err
-			}
+		if v.ID == currentIPID {
+			continue
+		}
+		if err := c.unmapCloudIP(ctx, v.ID); err != nil {
+			klog.V(4).Infof("Error unmapping CloudIP %q", v.ID)
+			return err
 		}
 	}
 	return nil
